@@ -1,4 +1,4 @@
-# 🚀 Welcome to MLOps Course Repository
+#  Welcome to MLOps Course Repository
 
 <div align="center">
 
