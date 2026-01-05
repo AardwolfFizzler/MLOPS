@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+venv/
+mlruns/
+
+
+# DVC generated outputs (do NOT commit)
+data/weatherAUS.csv
+data/weatherAUS_processed.csv
+models/
+results/
+
+
+# Other
+/lab4-mlflow-1/feature_importance.png
+/lab4-mlflow-1/predictions_vs_actual.png
+/aws/

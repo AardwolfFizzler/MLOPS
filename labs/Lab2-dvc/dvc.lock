@@ -34,7 +34,7 @@ stages:
     outs:
     - path: models/model.joblib
       hash: md5
-      md5: 76fdae46a207a62105c96674634eb184
+      md5: 4e762371f4a6ac7c6deda19e87a71bd4
       size: 4767225
   evaluate:
     cmd: python3 src/evaluate.py data/weatherAUS_processed.csv src/model.py 
@@ -46,7 +46,7 @@ stages:
       size: 14964257
     - path: models/model.joblib
       hash: md5
-      md5: 76fdae46a207a62105c96674634eb184
+      md5: 4e762371f4a6ac7c6deda19e87a71bd4
       size: 4767225
     - path: src/evaluate.py
       hash: md5
