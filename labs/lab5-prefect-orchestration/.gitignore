@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# VSCode
+.vscode/
+
+# Prefect
+.prefect/
+ml_workflow-deployment.yaml
+
+# Model files
+*.skops
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+
+# Data files (if large)
+# Uncomment if you don't want to track data files
+# data/*.csv
+# data/*.parquet
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
