@@ -1,0 +1,34 @@
+services:
+  tensorflow-serving:
+    image: tensorflow/serving:latest
+    container_name: tf_serving_iris
+    ports:
+      - "8501:8501"
+      - "8500:8500"
+    volumes:
+      - ./models:/models
+    environment:
+      - MODEL_NAME=iris_classifier
+    command:
+      - "--model_config_file=/models/models.config"
+      - "--model_config_file_poll_wait_seconds=60"
+    restart: unless-stopped
+    networks:
+      - mlops_network
+
+  web-ui:
+    build: ./web_ui
+    container_name: iris_web_ui
+    ports:
+      - "5000:5000"
+    environment:
+      - TF_SERVING_URL=http://tensorflow-serving:8501
+    depends_on:
+      - tensorflow-serving
+    restart: unless-stopped
+    networks:
+      - mlops_network
+
+networks:
+  mlops_network:
+    driver: bridge

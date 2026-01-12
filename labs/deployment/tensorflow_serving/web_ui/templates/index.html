@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Classifier - TensorFlow Serving</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌸 Iris Flower Classifier</h1>
+            <p class="subtitle">Powered by TensorFlow Serving</p>
+        </header>
+
+        <div class="info-section">
+            <h2>About This Application</h2>
+            <p>This application demonstrates a complete MLOps deployment stack:</p>
+            <ul>
+                <li><strong>TensorFlow Serving</strong> - Serves the trained ML model</li>
+                <li><strong>Flask Web UI</strong> - Provides user-friendly interface</li>
+                <li><strong>Docker Compose</strong> - Orchestrates multiple services</li>
+            </ul>
+        </div>
+
+        <div class="prediction-section">
+            <h2>Make a Prediction</h2>
+            <p>Enter the flower measurements below:</p>
+            
+            <form id="predictionForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sepal_length">Sepal Length (cm)</label>
+                        <input type="number" id="sepal_length" name="sepal_length" 
+                               step="0.1" min="0" max="10" value="5.1" required>
+                        <small>Typical range: 4.3 - 7.9</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sepal_width">Sepal Width (cm)</label>
+                        <input type="number" id="sepal_width" name="sepal_width" 
+                               step="0.1" min="0" max="10" value="3.5" required>
+                        <small>Typical range: 2.0 - 4.4</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="petal_length">Petal Length (cm)</label>
+                        <input type="number" id="petal_length" name="petal_length" 
+                               step="0.1" min="0" max="10" value="1.4" required>
+                        <small>Typical range: 1.0 - 6.9</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="petal_width">Petal Width (cm)</label>
+                        <input type="number" id="petal_width" name="petal_width" 
+                               step="0.1" min="0" max="10" value="0.2" required>
+                        <small>Typical range: 0.1 - 2.5</small>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-predict">Classify Flower</button>
+            </form>
+        </div>
+
+        <div id="results" class="results-section" style="display: none;">
+            <h2>Prediction Results</h2>
+            <div class="prediction-result">
+                <div class="predicted-class">
+                    <span class="label">Predicted Species:</span>
+                    <span id="predictedClass" class="value"></span>
+                </div>
+                <div class="probabilities">
+                    <h3>Class Probabilities:</h3>
+                    <div class="probability-bars">
+                        <div class="probability-item">
+                            <span class="class-name">Setosa</span>
+                            <div class="progress-bar">
+                                <div id="prob-setosa" class="progress-fill setosa"></div>
+                            </div>
+                            <span id="prob-setosa-text" class="percentage">0%</span>
+                        </div>
+                        <div class="probability-item">
+                            <span class="class-name">Versicolor</span>
+                            <div class="progress-bar">
+                                <div id="prob-versicolor" class="progress-fill versicolor"></div>
+                            </div>
+                            <span id="prob-versicolor-text" class="percentage">0%</span>
+                        </div>
+                        <div class="probability-item">
+                            <span class="class-name">Virginica</span>
+                            <div class="progress-bar">
+                                <div id="prob-virginica" class="progress-fill virginica"></div>
+                            </div>
+                            <span id="prob-virginica-text" class="percentage">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="examples-section">
+            <h2>Sample Values</h2>
+            <p>Try these example measurements:</p>
+            <div class="examples">
+                <button class="example-btn" onclick="loadExample(5.1, 3.5, 1.4, 0.2)">
+                    Setosa Example
+                </button>
+                <button class="example-btn" onclick="loadExample(6.4, 3.2, 4.5, 1.5)">
+                    Versicolor Example
+                </button>
+                <button class="example-btn" onclick="loadExample(6.3, 3.3, 6.0, 2.5)">
+                    Virginica Example
+                </button>
+            </div>
+        </div>
+
+        <footer>
+            <p>MLOps Deployment Lab - TensorFlow Serving with Docker Compose</p>
+            <div class="status">
+                <span id="statusIndicator" class="status-indicator">●</span>
+                <span id="statusText">Checking connection...</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Check health on load
+        window.addEventListener('load', checkHealth);
+
+        async function checkHealth() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                const indicator = document.getElementById('statusIndicator');
+                const text = document.getElementById('statusText');
+                
+                if (data.status === 'healthy') {
+                    indicator.style.color = '#4caf50';
+                    text.textContent = 'Connected to TensorFlow Serving';
+                } else {
+                    indicator.style.color = '#f44336';
+                    text.textContent = 'Disconnected from TensorFlow Serving';
+                }
+            } catch (error) {
+                const indicator = document.getElementById('statusIndicator');
+                const text = document.getElementById('statusText');
+                indicator.style.color = '#f44336';
+                text.textContent = 'Connection Error';
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                sepal_length: document.getElementById('sepal_length').value,
+                sepal_width: document.getElementById('sepal_width').value,
+                petal_length: document.getElementById('petal_length').value,
+                petal_width: document.getElementById('petal_width').value
+            };
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    alert('Prediction failed: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        function displayResults(data) {
+            // Show results section
+            document.getElementById('results').style.display = 'block';
+            
+            // Set predicted class
+            document.getElementById('predictedClass').textContent = data.predicted_class;
+            
+            // Update probability bars
+            const probs = data.probabilities;
+            updateProbabilityBar('setosa', probs['Setosa']);
+            updateProbabilityBar('versicolor', probs['Versicolor']);
+            updateProbabilityBar('virginica', probs['Virginica']);
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateProbabilityBar(className, probability) {
+            const bar = document.getElementById(`prob-${className}`);
+            const text = document.getElementById(`prob-${className}-text`);
+            
+            bar.style.width = probability + '%';
+            text.textContent = probability + '%';
+        }
+
+        function loadExample(sl, sw, pl, pw) {
+            document.getElementById('sepal_length').value = sl;
+            document.getElementById('sepal_width').value = sw;
+            document.getElementById('petal_length').value = pl;
+            document.getElementById('petal_width').value = pw;
+        }
+    </script>
+</body>
+</html>
