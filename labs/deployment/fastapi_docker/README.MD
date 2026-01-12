@@ -392,20 +392,6 @@ docker rmi iris-fastapi:v1
 
 ---
 
-## Step 8: Advanced Testing
-
-### 8.1 Test Error Handling
-
-Send invalid data:
-
-```bash
-curl -X POST "http://localhost:8000/predict" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "sepal_length": "invalid"
-  }'
-```
-
 ## Troubleshooting
 
 ### Issue: "Port 8000 is already in use"
