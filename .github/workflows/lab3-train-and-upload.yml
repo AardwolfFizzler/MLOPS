@@ -12,8 +12,6 @@ on:
       - main
     paths:
       - 'labs/lab3-github-actions-aws-beginner-lab/**'
-  schedule:
-    - cron: '0 0 * * *' # Run every day at midnight
   workflow_dispatch: # Allow manual trigger
 
 jobs:
