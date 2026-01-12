@@ -63,9 +63,12 @@ cd labs
 
 | Session | Topic | Materials | Labs |
 |---------|-------|-----------|------|
-| 01 | Introduction | ✅ |  | ✅ |
-| 02 | Version Control| ✅ | labGit: 1,2,3 |
-| 03 | TBD | 🔜 | 🔜 | ⏳ Coming Soon |
+| 01 | Introduction to MLOps | ✅ | - |
+| 02 | Version Control with Git & GitHub | ✅ | ✅ Lab 1, 2, 3 |
+| 03 | Data Version Control (DVC) | ✅ | ✅ Lab 1, 2 |
+| 04 | Experiment Tracking with MLflow | ✅ | ✅ Lab 4 |
+| 05 | Workflow Orchestration with Prefect | ✅ | ✅ Lab 5 |
+| 06 | Model Deployment | 🔜 | ✅ FastAPI Docker, TensorFlow Serving |
 
 </div>
 
